@@ -1,6 +1,7 @@
 package microservice.shop.orderservice.Services;
 
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import microservice.shop.orderservice.DTOs.OrderLineItemsDto;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Transactional
 public class OrderService {
 
     private final OrderRepository orderRepository;
