@@ -1,4 +1,4 @@
-package microservice.shop.productservice.Models;
+package microservice.shop.productservice.models;
 
 
 import lombok.AllArgsConstructor;

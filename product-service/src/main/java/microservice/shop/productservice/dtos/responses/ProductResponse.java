@@ -1,4 +1,4 @@
-package microservice.shop.productservice.DTOs.Requests;
+package microservice.shop.productservice.dtos.responses;
 
 
 import lombok.AllArgsConstructor;
@@ -12,7 +12,9 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductRequest {
+public class ProductResponse {
+
+    private String id;
     private String name;
     private String description;
     private BigDecimal price;

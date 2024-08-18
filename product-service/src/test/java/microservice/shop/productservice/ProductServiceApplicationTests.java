@@ -1,71 +1,61 @@
 package microservice.shop.productservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import microservice.shop.productservice.DTOs.Requests.ProductRequest;
-import microservice.shop.productservice.Repositories.ProductRepository;
-import org.junit.jupiter.api.Assertions;
+import io.restassured.RestAssured;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.math.BigDecimal;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@SpringBootTest
-@Testcontainers
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProductServiceApplicationTests {
 
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private ProductRepository productRepository;
+    @ServiceConnection // auto-injects the service connection
+    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:7.0.5");
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @LocalServerPort
+    private Integer port;
 
-    @Container
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:4.4.2");
+    @BeforeEach
+    void setup() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
+    }
 
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+    static {
+        mongoDBContainer.start();
     }
 
 
-    @Test
-    void shouldCreateProduct() throws Exception {
+    @Nested
+    class HappyCase{
+        @Test
+        void testCreateProduct_validRequest_returnCreated() {
+            String requestBody = """
+                    {
+                        "name": "Product 1",
+                        "description": "Description 1",
+                        "price": 100
+                    }
+                    """; // JSON request body
 
-        ProductRequest productRequest = getProductRequest();
-        String productRequestString = objectMapper.writeValueAsString(productRequest);
+            RestAssured.given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(requestBody)
+                    .when()
+                    .post("/api/product")
+                    .then()
+                    .statusCode(201)
+                    .body("id", Matchers.notNullValue())
+                    .body("name", Matchers.equalTo("Product 1"))
+                    .body("description", Matchers.equalTo("Description 1"))
+                    .body("price", Matchers.equalTo(100));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/product")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(productRequestString))
-                .andExpect((status().isCreated()));
-
-        Assertions.assertEquals(1, productRepository.count());
+        }
     }
-
-    private ProductRequest getProductRequest() {
-
-        return ProductRequest.builder()
-                .name("Product 1")
-                .description("Description 1")
-                .price(BigDecimal.valueOf(1200))
-                .build();
-    }
-
 }
