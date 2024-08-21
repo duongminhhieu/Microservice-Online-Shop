@@ -1,10 +1,10 @@
-package microservice.shop.orderservice.DTOs.Requests;
+package microservice.shop.orderservice.dtos.requests;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import microservice.shop.orderservice.DTOs.OrderLineItemsDto;
+import microservice.shop.orderservice.dtos.OrderLineItemsDto;
 
 import java.util.List;
 

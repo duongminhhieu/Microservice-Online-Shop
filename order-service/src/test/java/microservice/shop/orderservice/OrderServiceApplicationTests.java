@@ -1,9 +1,9 @@
 package microservice.shop.orderservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import microservice.shop.orderservice.DTOs.OrderLineItemsDto;
-import microservice.shop.orderservice.DTOs.Requests.OrderRequest;
-import microservice.shop.orderservice.Repositories.OrderRepository;
+import microservice.shop.orderservice.dtos.OrderLineItemsDto;
+import microservice.shop.orderservice.dtos.requests.OrderRequest;
+import microservice.shop.orderservice.repositories.OrderRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

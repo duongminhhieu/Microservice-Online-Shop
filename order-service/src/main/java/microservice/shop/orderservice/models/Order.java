@@ -1,4 +1,4 @@
-package microservice.shop.orderservice.Models;
+package microservice.shop.orderservice.models;
 
 
 import jakarta.persistence.*;
@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String orderNumber;
+    private String skuCode;
+    private BigDecimal totalPrice;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderLineItems> orderLineItems;
