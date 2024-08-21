@@ -1,16 +1,15 @@
-package microservice.shop.orderservice.Services;
+package microservice.shop.orderservice.services;
 
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import microservice.shop.orderservice.Configs.WebClientConfig;
-import microservice.shop.orderservice.DTOs.InventoryResponse;
-import microservice.shop.orderservice.DTOs.OrderLineItemsDto;
-import microservice.shop.orderservice.DTOs.Requests.OrderRequest;
-import microservice.shop.orderservice.Models.Order;
-import microservice.shop.orderservice.Models.OrderLineItems;
-import microservice.shop.orderservice.Repositories.OrderRepository;
+import microservice.shop.orderservice.dtos.InventoryResponse;
+import microservice.shop.orderservice.dtos.OrderLineItemsDto;
+import microservice.shop.orderservice.dtos.requests.OrderRequest;
+import microservice.shop.orderservice.models.Order;
+import microservice.shop.orderservice.models.OrderLineItems;
+import microservice.shop.orderservice.repositories.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

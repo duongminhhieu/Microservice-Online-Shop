@@ -1,4 +1,4 @@
-package microservice.shop.orderservice.DTOs;
+package microservice.shop.orderservice.dtos;
 
 
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package microservice.shop.orderservice.Models;
+package microservice.shop.orderservice.models;
 
 
 import jakarta.persistence.*;
