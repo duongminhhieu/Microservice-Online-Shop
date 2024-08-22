@@ -1,8 +1,8 @@
-package microservice.shop.inventoryservice.Controllers;
+package microservice.shop.inventoryservice.controllers;
 
 import lombok.RequiredArgsConstructor;
-import microservice.shop.inventoryservice.DTOs.Responses.InventoryResponse;
-import microservice.shop.inventoryservice.Services.InventoryService;
+import microservice.shop.inventoryservice.dtos.responses.InventoryResponse;
+import microservice.shop.inventoryservice.services.InventoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

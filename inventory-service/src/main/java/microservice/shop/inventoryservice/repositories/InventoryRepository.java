@@ -1,8 +1,7 @@
-package microservice.shop.inventoryservice.Repositories;
+package microservice.shop.inventoryservice.repositories;
 
 
-import microservice.shop.inventoryservice.DTOs.Responses.InventoryResponse;
-import microservice.shop.inventoryservice.Models.Inventory;
+import microservice.shop.inventoryservice.models.Inventory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
