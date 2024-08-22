@@ -1,4 +1,4 @@
-package microservice.shop.inventoryservice.DTOs.Responses;
+package microservice.shop.inventoryservice.dtos.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

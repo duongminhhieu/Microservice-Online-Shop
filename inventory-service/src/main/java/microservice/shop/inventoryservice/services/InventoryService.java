@@ -1,10 +1,10 @@
-package microservice.shop.inventoryservice.Services;
+package microservice.shop.inventoryservice.services;
 
 
 import lombok.RequiredArgsConstructor;
-import microservice.shop.inventoryservice.DTOs.Responses.InventoryResponse;
-import microservice.shop.inventoryservice.Models.Inventory;
-import microservice.shop.inventoryservice.Repositories.InventoryRepository;
+import microservice.shop.inventoryservice.dtos.responses.InventoryResponse;
+import microservice.shop.inventoryservice.models.Inventory;
+import microservice.shop.inventoryservice.repositories.InventoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

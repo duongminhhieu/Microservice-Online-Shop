@@ -1,4 +1,4 @@
-package microservice.shop.inventoryservice.Models;
+package microservice.shop.inventoryservice.models;
 
 
 import jakarta.persistence.*;
