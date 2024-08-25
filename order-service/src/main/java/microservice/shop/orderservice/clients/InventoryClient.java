@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = "inventory", url = "http://localhost:8082")
+@FeignClient(value = "inventory", url = "${inventory.url}")
 public interface InventoryClient {
 
     @GetMapping(value = "/api/inventory")

@@ -37,7 +37,7 @@ public class OrderService {
             throw new RuntimeException("Product is not in stock, please try again later.");
         }
 
-        boolean clientInStock = inventoryResponses.stream().allMatch(InventoryResponse::isInStock);
+        boolean clientInStock = inventoryResponses.stream().allMatch(InventoryResponse::getIsInStock);
 
         if (clientInStock) {
             Order order = new Order();

@@ -1,88 +1,71 @@
 package microservice.shop.orderservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import microservice.shop.orderservice.dtos.OrderLineItemsDto;
-import microservice.shop.orderservice.dtos.requests.OrderRequest;
-import microservice.shop.orderservice.repositories.OrderRepository;
-import org.junit.jupiter.api.Assertions;
+import io.restassured.RestAssured;
+import microservice.shop.orderservice.stubs.InventoryClientStub;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Testcontainers
-@AutoConfigureMockMvc
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWireMock(port = 0)
 class OrderServiceApplicationTests {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @ServiceConnection
+    static MySQLContainer mySQLContainer = new MySQLContainer("mysql:8.3.0");
 
+    @LocalServerPort
+    private Integer port;
 
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Container
-    static MySQLContainer mySQLContainer = new MySQLContainer("mysql:5.7");
-
-    @DynamicPropertySource
-    static void setProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", mySQLContainer::getUsername);
-        registry.add("spring.datasource.password", mySQLContainer::getPassword);
+    @BeforeEach
+    void setUp() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
     }
 
+    static {
+        mySQLContainer.start();
+    }
 
     @Test
-    void shouldPlaceOrder() throws Exception {
-        OrderRequest orderRequest = getOrderRequest();
-        String orderRequestString = objectMapper.writeValueAsString(orderRequest);
+    void placeOrder_validRequest_success() {
+        // given
+        String submitOrderJson = """
+                {
+                    "orderLineItemsDtosList": [
+                        {
+                            "skuCode": "iphone_15",
+                            "price": 1200,
+                            "quantity": 12
+                        }
+                    ]
+                }
+                """;
+        // when, then
+        InventoryClientStub.stubInventoryCall(List.of("iphone_15"));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/order")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(orderRequestString))
-                .andExpect(status().isCreated());
+        var responseBodyString = RestAssured.given()
+                .contentType("application/json")
+                .body(submitOrderJson)
+                .when()
+                .post("/api/order")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .body()
+                .asString();
 
-        Assertions.assertEquals(1, orderRepository.count());
-
+        assertThat(responseBodyString).contains("Order Placed Successfully");
     }
-
-
-    private OrderRequest getOrderRequest() {
-        OrderRequest orderRequest = new OrderRequest();
-
-        List<OrderLineItemsDto> orderLineItemsDtoList = List.of(
-                OrderLineItemsDto.builder()
-                        .skuCode("iphone_10")
-                        .quantity(2)
-                        .price(BigDecimal.valueOf(1000))
-                        .build(),
-                OrderLineItemsDto.builder()
-                        .skuCode("iphone_11")
-                        .quantity(1)
-                        .price(BigDecimal.valueOf(1200))
-                        .build()
-
-        );
-
-        orderRequest.setOrderLineItemsDtosList(orderLineItemsDtoList);
-        return orderRequest;
-    }
-
 
 }
