@@ -30,9 +30,21 @@
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <testcontainers.version>1.20.1</testcontainers.version>
         <rest-assured.version>5.3.2</rest-assured.version>
+        <springdoc-openapi-ui.version>2.6.0</springdoc-openapi-ui.version>
+        <springdoc-openapi-api.version>2.6.0</springdoc-openapi-api.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+            <version>${springdoc-openapi-api.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
