@@ -6,7 +6,7 @@ services:
     ports:
       - "3308:3306"  # Changed host port to 3307 to avoid conflict
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: password
     volumes:
       - ./mysql:/var/lib/mysql
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
