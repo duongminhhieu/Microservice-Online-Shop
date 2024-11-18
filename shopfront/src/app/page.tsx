@@ -1,15 +1,23 @@
-import { Button } from "antd";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import Login from "../components/Login";
+import Logout from "../components/Logout";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+  if (session) {
+    return (
+      <div className="flex flex-col space-y-3 justify-center items-center h-screen">
+        <div>Your name is {session.user?.name}</div>
+        <div>
+          <Logout />
+        </div>
+      </div>
+    );
+  }
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="App">Microservice Online Shop</div> {/* Login Button */}
-        <Button type="primary" href="/api/auth/signin">
-          Login
-        </Button>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer>
+    <div className="flex justify-center items-center h-screen">
+      <Login />
     </div>
   );
 }
