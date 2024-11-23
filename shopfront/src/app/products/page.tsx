@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Table, Spin, Typography, Button } from "antd";
 import { Product } from "./models/Product";
 import CreateProductDialog from "./components/createProductDialog";
+import { ProductAPICaller } from "@/services/apis/product.api";
 
 const { Title } = Typography;
 
@@ -11,11 +12,12 @@ function ProductPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("/api/products");
-      const data = await response.json();
+      const response = await ProductAPICaller.getAllProducts();
+      const data = await response.data;
       setProducts(data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -26,7 +28,7 @@ function ProductPage() {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [refresh]);
 
   const columns = [
     {
@@ -64,12 +66,11 @@ function ProductPage() {
 
       <CreateProductDialog
         isOpen={isCreateDialogOpen}
-        onOpen={() => {
-          console.log("hello");
-        }}
         onClose={() => {
-          console.log("close");
           setIsCreateDialogOpen(false);
+        }}
+        onCreated={() => {
+          setRefresh(!refresh);
         }}
       />
     </div>

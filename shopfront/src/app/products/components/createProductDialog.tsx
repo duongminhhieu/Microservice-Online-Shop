@@ -1,47 +1,53 @@
-import { Modal, Button, Form, Input } from "antd";
+import { ProductAPICaller } from "@/services/apis/product.api";
+import { Modal, Button, Form, Input, message } from "antd";
+import { useEffect } from "react";
 
 interface CreateProductDialogProps {
   isOpen: boolean;
-  onOpen: () => void;
+  onCreated: () => void;
   onClose: () => void;
 }
 
 function CreateProductDialog({
   isOpen,
-  onOpen,
+  onCreated,
   onClose,
 }: CreateProductDialogProps) {
-  const handleCreateProduct = (values: any) => {
-    // Handle product creation logic here
-    // createProduct(values);
-    onClose();
-  };
+  const [form] = Form.useForm();
 
   const createProduct = async (product: any) => {
     try {
-      const response = await fetch("/api/products", {
-        method: "POST",
-        body: JSON.stringify(product),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      console.log(data);
+      const response = await ProductAPICaller.createProduct(product);
+
+      if (response.status === 201) {
+        handleCloseDialog();
+        onCreated();
+      }
     } catch (error) {
       console.error("Error creating product:", error);
     }
   };
+
+  const handleCloseDialog = () => {
+    form.resetFields();
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      form.resetFields();
+    }
+  }, [isOpen, form]);
 
   return (
     <div>
       <Modal
         title="Create Product"
         open={isOpen}
-        onCancel={onClose}
+        onCancel={handleCloseDialog}
         footer={false}
       >
-        <Form layout="vertical" onFinish={handleCreateProduct}>
+        <Form form={form} layout="vertical" onFinish={createProduct}>
           <Form.Item
             label="Product Name"
             name="name"
@@ -74,7 +80,7 @@ function CreateProductDialog({
           </Form.Item>
 
           <div className="flex gap-4">
-            <Button key="cancel" onClick={onClose}>
+            <Button key="cancel" onClick={handleCloseDialog}>
               Cancel
             </Button>
             <Button type="primary" htmlType="submit">
